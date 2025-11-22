@@ -238,9 +238,14 @@ SPDLOG_INLINE void registry::set_levels(log_levels levels, level::level_enum *gl
     }
 }
 
-SPDLOG_INLINE registry &registry::instance() {
-    static registry s_instance;
+SPDLOG_INLINE std::shared_ptr<registry> &registry::instance_shared() {
+    static std::shared_ptr<registry> s_instance = std::make_shared<registry>();
     return s_instance;
+}
+
+SPDLOG_INLINE registry &registry::instance() {
+    static auto s_instance = instance_shared();
+    return *s_instance;
 }
 
 SPDLOG_INLINE void registry::apply_logger_env_levels(std::shared_ptr<logger> new_logger) {

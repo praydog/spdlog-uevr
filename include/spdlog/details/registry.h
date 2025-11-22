@@ -26,6 +26,9 @@ class thread_pool;
 
 class SPDLOG_API registry {
 public:
+    registry();
+    ~registry();
+
     using log_levels = std::unordered_map<std::string, level::level_enum>;
     registry(const registry &) = delete;
     registry &operator=(const registry &) = delete;
@@ -96,14 +99,12 @@ public:
     // set levels for all existing/future loggers. global_level can be null if should not set.
     void set_levels(log_levels levels, level::level_enum *global_level);
 
+    static std::shared_ptr<registry> &instance_shared();
     static registry &instance();
 
     void apply_logger_env_levels(std::shared_ptr<logger> new_logger);
 
 private:
-    registry();
-    ~registry();
-
     void throw_if_exists_(const std::string &logger_name);
     void register_logger_(std::shared_ptr<logger> new_logger);
     void register_or_replace_(std::shared_ptr<logger> new_logger);
